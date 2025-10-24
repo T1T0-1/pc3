@@ -25,3 +25,36 @@ public class QuickSortApp {
         sc.close();
     }
 
+    // Algoritmo QuickSort (Divide y Vencerás)
+    public static void quickSort(int[] arr, int inicio, int fin) {
+        if (inicio < fin) {
+            int indicePivote = particion(arr, inicio, fin);
+            quickSort(arr, inicio, indicePivote - 1); // sublista izquierda
+            quickSort(arr, indicePivote + 1, fin);    // sublista derecha
+        }
+    }
+
+    // Método para dividir el arreglo según el pivote
+    public static int particion(int[] arr, int inicio, int fin) {
+        int pivote = arr[fin]; // Elegimos el último elemento como pivote
+        int i = inicio - 1;
+
+        for (int j = inicio; j < fin; j++) {
+            if (arr[j] <= pivote) {
+                i++;
+                intercambiar(arr, i, j);
+            }
+        }
+
+        intercambiar(arr, i + 1, fin);
+        return i + 1;
+    }
+
+    // Método auxiliar para intercambiar dos elementos
+    public static void intercambiar(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+
