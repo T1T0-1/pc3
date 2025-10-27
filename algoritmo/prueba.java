@@ -122,3 +122,13 @@ public class QuickSortGUI extends JFrame implements ActionListener {
         });
     }
 }
+// Datos de conexión
+    private final String URL = "jdbc:mysql://localhost:3306/quicksortdb";
+    private final String USER = "root";      // Cambia si tu usuario es distinto
+    private final String PASS = "";          // Agrega contraseña si tienes una
+
+    public QuickSortDB() {
+        setTitle("QuickSort con Base de Datos - Divide y Vencerás");
+        setSize(550, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout(10, 10));
