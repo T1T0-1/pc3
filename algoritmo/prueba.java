@@ -132,3 +132,23 @@ public class QuickSortGUI extends JFrame implements ActionListener {
         setSize(550, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+
+// Conectar y leer datos desde la base de datos
+    private void cargarDesdeBD() {
+        numeros.clear();
+        outputArea.setText("Cargando datos desde la base de datos...\n");
+
+        try (Connection con = DriverManager.getConnection(URL, USER, PASS);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery("SELECT valor FROM numeros")) {
+
+            while (rs.next()) {
+                numeros.add(rs.getInt("valor"));
+            }
+
+            outputArea.append("Datos cargados: " + numeros + "\n");
+
+        } catch (SQLException ex) {
+            outputArea.append("Error al conectar con la base de datos: " + ex.getMessage());
+        }
+    }
