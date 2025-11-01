@@ -101,15 +101,7 @@ public class QuickSortGUI extends JFrame {
         }
     }
 
-    // --- Algoritmo QuickSort ---
-    public static void quickSort(int[] arr, int inicio, int fin) {
-        if (inicio < fin) {
-            int indicePivote = particion(arr, inicio, fin);
-            quickSort(arr, inicio, indicePivote - 1);
-            quickSort(arr, indicePivote + 1, fin);
-        }
-    }
-
+    
     public static int particion(int[] arr, int inicio, int fin) {
         int pivote = arr[fin];
         int i = inicio - 1;
