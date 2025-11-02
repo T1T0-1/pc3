@@ -74,7 +74,14 @@ public class QuickSortGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error en la entrada de datos. Usa números separados por comas.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+// --- Algoritmo QuickSort ---
+    public static void quickSort(int[] arr, int inicio, int fin) {
+        if (inicio < fin) {
+            int indicePivote = particion(arr, inicio, fin);
+            quickSort(arr, inicio, indicePivote - 1);
+            quickSort(arr, indicePivote + 1, fin);
+        }
+    }
     // --- Método para buscar un elemento (Búsqueda Binaria) ---
     private void buscarElemento() {
         if (arregloOrdenado == null) {
