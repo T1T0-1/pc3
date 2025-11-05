@@ -171,3 +171,12 @@ public class QuickSortGUI extends JFrame {
             } else {
                 txtResultado.setText("El archivo de datos está vacío.\n");
             }   
+Guardar datos en archivo .txt private void guardarEnArchivo() { String contenido =
+
+txtNumeros.getText().trim(); if (contenido.isEmpty()) {
+
+JOptionPane.showMessageDialog(this, "No hay datos para guardar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+
+return;
+
+}
