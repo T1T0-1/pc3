@@ -180,3 +180,37 @@ JOptionPane.showMessageDialog(this, "No hay datos para guardar.", "Advertencia",
 return;
 
 }
+
+Método para buscar un elemento (Búsqueda Binaria)
+
+private void buscarElemento() { if (arregloOrdenado == null)
+
+JOptionPane.showMessageDialog(this,
+
+"Primero ordena el arreglo antes de buscar.", "Atención",
+
+JOptionPane.WARNING_MESSAGE);
+
+return;
+
+}
+
+try {
+
+int valor =
+
+txtResultado.append("\n===
+
+Integer.parseInt(txtBuscar.getText().trim(
+
+));
+
+int resultado busquedaBinaria(arregloOrdenado, valor);
+
+RESULTADO DE LA BÚSQUEDA BINARIA ===\n"); if (resultado == -1) { txtResultado.append("El
+
+elemento " + valor + " NO se encuentra en
+
+el arreglo.\n");
+
+txtResultado
