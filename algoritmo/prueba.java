@@ -152,21 +152,5 @@ public class QuickSortGUI extends JFrame {
 }
 
 
-/////////
-// MÉTODOS DE BASE DE DATOS (.TXT)
-    // ======================================================
-
-    // Cargar datos desde archivo .txt
-    private void cargarDesdeArchivo() {
-        File archivo = new File(ARCHIVO);
-        if (!archivo.exists()) {
-       txtResultado.setText("No se encontró el archivo de datos. Se creará automáticamente.\n");
-            return;
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            String linea = br.readLine();
-            if (linea != null && !linea.isEmpty()) {
-                txtNumeros.setText(linea.trim());
-                txtResultado.setText("Datos cargados desde archivo TXT:\n" + linea + "\n");
-            } else {
+//
                 
