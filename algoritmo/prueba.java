@@ -156,3 +156,18 @@ public class QuickSortDB extends JFrame implements ActionListener {
         });
     }
 }     
+public class LaberintoBacktracking {
+
+    static int[][] laberinto = {
+        {1, 1, 0, 1},
+        {0, 1, 1, 1},
+        {0, 0, 1, 9} // 9 representa la salida
+    };
+    static boolean[][] visitado = new boolean[3][4];
+
+    public static void main(String[] args) {
+        if (resolverLaberinto(0, 0))
+            System.out.println("¡Salida encontrada!");
+        else
+            System.out.println("No existe una salida.");
+    }
