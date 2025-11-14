@@ -171,3 +171,19 @@ public class LaberintoBacktracking {
         else
             System.out.println("No existe una salida.");
     }
+
+static boolean resolverLaberinto(int
+
+una salida.");
+
+fila, int col) { // Verificar límites if (fila < 0 || col < 0 || fila laberinto.length || col >= laberinto [0].length)
+
+return false;
+
+// Caso base: llegada a la salida
+
+if (laberinto[fila][col] == 9) return true;
+
+// Pared o ya visitado if (laberinto[fila][col] == 0 || visitado[fila][col])
+
+return false;
