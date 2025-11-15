@@ -1,189 +1,109 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
-import java.util.ArrayList;
+import javax.swing.*;
 
-public class QuickSortDB extends JFrame implements ActionListener {
+public class LaberintoGUI extends JFrame {
 
-    private JTextArea outputArea;
-    private JButton loadButton, sortButton, saveButton;
-    private ArrayList<Integer> numeros = new ArrayList<>();
-
-    // Datos de conexión
-    private final String URL = "jdbc:mysql://localhost:3306/quicksortdb";
-    private final String USER = "root";      // Cambia si tu usuario es distinto
-    private final String PASS = "";          // Agrega contraseña si tienes una
-
-    public QuickSortDB() {
-        setTitle("QuickSort con Base de Datos - Divide y Vencerás");
-        setSize(550, 400);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(10, 10));
-
-        // Área de salida
-        outputArea = new JTextArea();
-        outputArea.setEditable(false);
-        outputArea.setFont(new Font("Consolas", Font.PLAIN, 14));
-        JScrollPane scrollPane = new JScrollPane(outputArea);
-
-        // Botones
-        JPanel buttonPanel = new JPanel();
-        loadButton = new JButton("Cargar desde BD");
-        sortButton = new JButton("Ordenar con QuickSort");
-        saveButton = new JButton("Guardar en BD");
-
-        loadButton.addActionListener(this);
-        sortButton.addActionListener(this);
-        saveButton.addActionListener(this);
-
-        buttonPanel.add(loadButton);
-        buttonPanel.add(sortButton);
-        buttonPanel.add(saveButton);
-
-        add(scrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-        setLocationRelativeTo(null);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == loadButton) {
-            cargarDesdeBD();
-        } else if (e.getSource() == sortButton) {
-            ordenarNumeros();
-        } else if (e.getSource() == saveButton) {
-            guardarEnBD();
-        }
-    }
-
-    // Conectar y leer datos desde la base de datos
-    private void cargarDesdeBD() {
-        numeros.clear();
-        outputArea.setText("Cargando datos desde la base de datos...\n");
-
-        try (Connection con = DriverManager.getConnection(URL, USER, PASS);
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("SELECT valor FROM numeros")) {
-
-            while (rs.next()) {
-                numeros.add(rs.getInt("valor"));
-            }
-
-            outputArea.append("Datos cargados: " + numeros + "\n");
-
-        } catch (SQLException ex) {
-            outputArea.append("Error al conectar con la base de datos: " + ex.getMessage());
-        }
-    }
-
-    // Aplicar QuickSort
-    private void ordenarNumeros() {
-        if (numeros.isEmpty()) {
-            outputArea.append("Primero carga los datos desde la base de datos.\n");
-            return;
-        }
-
-        int[] arr = numeros.stream().mapToInt(Integer::intValue).toArray();
-        quickSort(arr, 0, arr.length - 1);
-
-        outputArea.append("\nDatos ordenados: ");
-        for (int num : arr) outputArea.append(num + " ");
-        outputArea.append("\n");
-
-        // Actualizar lista
-        numeros.clear();
-        for (int num : arr) numeros.add(num);
-    }
-
-    // Guardar el resultado en la tabla "numeros_ordenados"
-    private void guardarEnBD() {
-        if (numeros.isEmpty()) {
-            outputArea.append("No hay datos para guardar.\n");
-            return;
-        }
-
-        try (Connection con = DriverManager.getConnection(URL, USER, PASS);
-             Statement st = con.createStatement()) {
-
-            st.executeUpdate("DELETE FROM numeros_ordenados");
-
-            for (int num : numeros) {
-                st.executeUpdate("INSERT INTO numeros_ordenados (valor) VALUES (" + num + ")");
-            }
-
-            outputArea.append("\nDatos ordenados guardados correctamente en la tabla 'numeros_ordenados'.\n");
-
-        } catch (SQLException ex) {
-            outputArea.append("Error al guardar en la base de datos: " + ex.getMessage());
-        }
-    }
-
-    // QuickSort
-    public static void quickSort(int[] arr, int inicio, int fin) {
-        if (inicio < fin) {
-            int indicePivote = particion(arr, inicio, fin);
-            quickSort(arr, inicio, indicePivote - 1);
-            quickSort(arr, indicePivote + 1, fin);
-        }
-    }
-
-    public static int particion(int[] arr, int inicio, int fin) {
-        int pivote = arr[fin];
-        int i = inicio - 1;
-
-        for (int j = inicio; j < fin; j++) {
-            if (arr[j] <= pivote) {
-                i++;
-                intercambiar(arr, i, j);
-            }
-        }
-
-        intercambiar(arr, i + 1, fin);
-        return i + 1;
-    }
-
-    public static void intercambiar(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
-
-    // Método principal
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new QuickSortDB().setVisible(true);
-        });
-    }
-}     
-public class LaberintoBacktracking {
-
-    static int[][] laberinto = {
+    // 1 = camino, 0 = pared, 9 = salida
+    int[][] laberinto = {
         {1, 1, 0, 1},
         {0, 1, 1, 1},
-        {0, 0, 1, 9} // 9 representa la salida
+        {0, 0, 1, 9}
     };
-    static boolean[][] visitado = new boolean[3][4];
 
-    public static void main(String[] args) {
-        if (resolverLaberinto(0, 0))
-            System.out.println("¡Salida encontrada!");
-        else
-            System.out.println("No existe una salida.");
+    boolean[][] visitado = new boolean[3][4];
+
+    JPanel panelLaberinto = new JPanel();
+
+    public LaberintoGUI() {
+        setTitle("Algoritmo Recursivo con Backtracking");
+        setSize(420, 350);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        panelLaberinto.setLayout(new GridLayout(3, 4));
+        dibujarLaberinto();
+
+        JButton btnResolver = new JButton("Resolver Laberinto");
+        btnResolver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (resolverLaberinto(0, 0)) {
+                    JOptionPane.showMessageDialog(null, "¡Salida encontrada!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay salida");
+                }
+                dibujarLaberinto();
+            }
+        });
+
+        add(panelLaberinto, BorderLayout.CENTER);
+        add(btnResolver, BorderLayout.SOUTH);
+
+        setVisible(true);
     }
 
-static boolean resolverLaberinto(int
+    // Dibuja el laberinto en pantalla
+    public void dibujarLaberinto() {
+        panelLaberinto.removeAll();
 
-una salida.");
+        for (int i = 0; i < laberinto.length; i++) {
+            for (int j = 0; j < laberinto[0].length; j++) {
+                JLabel celda = new JLabel("", SwingConstants.CENTER);
+                celda.setOpaque(true);
+                celda.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-fila, int col) { // Verificar límites if (fila < 0 || col < 0 || fila laberinto.length || col >= laberinto [0].length)
+                if (laberinto[i][j] == 0) {
+                    celda.setBackground(Color.BLACK); // pared
+                } else if (laberinto[i][j] == 9) {
+                    celda.setBackground(Color.RED); // salida
+                } else if (visitado[i][j]) {
+                    celda.setBackground(Color.GREEN); // camino explorado
+                } else {
+                    celda.setBackground(Color.WHITE); // camino libre
+                }
 
-return false;
+                panelLaberinto.add(celda);
+            }
+        }
 
-// Caso base: llegada a la salida
+        panelLaberinto.revalidate();
+        panelLaberinto.repaint();
+    }
 
-if (laberinto[fila][col] == 9) return true;
+    // Algoritmo recursivo con backtracking
+    public boolean resolverLaberinto(int fila, int col) {
 
-// Pared o ya visitado if (laberinto[fila][col] == 0 || visitado[fila][col])
+        // Fuera de límites
+        if (fila < 0 || col < 0 || fila >= laberinto.length || col >= laberinto[0].length) {
+            return false;
+        }
 
-return false;
+        // Caso base: salida encontrada
+        if (laberinto[fila][col] == 9) {
+            visitado[fila][col] = true;
+            return true;
+        }
+
+        // Si es pared o ya visitado
+        if (laberinto[fila][col] == 0 || visitado[fila][col]) {
+            return false;
+        }
+
+        visitado[fila][col] = true;
+
+        // Intentar moverse
+        if (resolverLaberinto(fila - 1, col)) return true; // arriba
+        if (resolverLaberinto(fila + 1, col)) return true; // abajo
+        if (resolverLaberinto(fila, col - 1)) return true; // izquierda
+        if (resolverLaberinto(fila, col + 1)) return true; // derecha
+
+        // Retroceder
+        visitado[fila][col] = false;
+        return false;
+    }
+
+    public static void main(String[] args) {
+        new LaberintoGUI();
+    }
+}
